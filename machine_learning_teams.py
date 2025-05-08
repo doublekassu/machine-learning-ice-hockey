@@ -2,26 +2,33 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import precision_score
-matches = pd.read_csv("all_teams.csv", index_col=0)
 
-#Mark home and away teams to integers, 0 for away and 1 for home
-matches["home_or_away_code"] = matches["home_or_away"].astype("category").cat.codes
-#Mark home team and opposingteam with a unique ID
-matches["opp_code"] = matches["opposingTeam"].astype("category").cat.codes
-matches["hometeam_code"] = matches["playerTeam"].astype("category").cat.codes
-
-
-#Drop rows which situation column isn't "all" to make analyzing easier
-matches = matches[matches["situation"] == "all"]
+def machine_learning():
+    matches = pd.read_csv("all_teams.csv", index_col=0)
+    #Mark home and away teams to integers, 0 for away and 1 for home
+    matches["home_or_away_code"] = matches["home_or_away"].astype("category").cat.codes
+    
+    #Mark home team and opposingteam with a unique ID
+    matches["opp_code"] = matches["opposingTeam"].astype("category").cat.codes
+    matches["hometeam_code"] = matches["playerTeam"].astype("category").cat.codes
+    
+    #Drop rows which situation column isn't "all" to make analyzing easier
+    matches = matches[matches["situation"] == "all"]
  
-#Set a winner column. When the team has scored more than the opponent, set it to 1
-winner = 0
-matches["winner"] = (matches["goalsFor"] > matches["goalsAgainst"]).astype(int)
+    #Set a winner column. When the team has scored more than the opponent, set it to 1
+    winner = 0
+    matches["winner"] = (matches["goalsFor"] > matches["goalsAgainst"]).astype(int)
 
-#Use RandomForestClassifier as the algorithm to recognize non-linear patterns in the data
-rf = RandomForestClassifier(n_estimators=50, min_samples_split=10, random_state=1)
+    #Use RandomForestClassifier as the algorithm to recognize non-linear patterns in the data
+    rf = RandomForestClassifier(n_estimators=50, min_samples_split=10, random_state=1)
 
-def set_season_years(season_start_year, season_end_year):
+    #Train set is seasons 2008-2023
+    train = set_season_years(2008, 2023, matches)
+
+    #Test set is 2023-2024
+    test = set_season_years(2023, 2024, matches)
+
+def set_season_years(season_start_year, season_end_year, matches):
     start_season_date = "0901"
     end_season_date = "0901"
 
@@ -31,18 +38,10 @@ def set_season_years(season_start_year, season_end_year):
     season_end_date_str = str(season_end_year) + end_season_date
     season_end_date_int = int(season_end_date_str)
 
-    print(season_start_date_int)
-    print(season_end_date_int)
 
     dataset = matches[(matches["gameDate"] >= season_start_date_int) & (matches["gameDate"] < season_end_date_int)]
     return dataset
-train = set_season_years(2008, 2023)
 
-#Train set is seasons 2008-2023
-#train = matches[(matches["gameDate"] >= 20081004) & (matches["gameDate"] < 20231010)]
-
-#Test set is 2023-2024
-test = set_season_years(2023, 2024)
 
 #Make predictions based on if the game is a playoff game, if it's a home or away game and the teams playing
 
