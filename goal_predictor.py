@@ -51,11 +51,55 @@ def train_model(df_train):
     
     return model, features, target
 
-#def find_player_by_id(df_2023, pelaaja_id):
- #   player_row = df_2023[df_2023["playerId"] == pelaaja_id]
-  #  return player_row
 
-def find_player_by_id(df_train, pelaaja_id):
-    player_row = df_train[df_train["playerId"] == pelaaja_id]
+def find_player_by_id(df, pelaaja_id):
+    player_row = df[df["playerId"] == pelaaja_id]
     return player_row
 
+def evaluate_model(model, features, df_test):
+    """
+    Evaluate the model on test data and return accuracy metrics
+    """
+    X_test = df_test[features]
+    y_test = df_test["I_F_goals"]
+    
+    y_pred = model.predict(X_test)
+    r2 = 100*r2_score(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+    
+    return r2, rmse, y_test.mean(), y_pred.mean()
+
+def predict_player_goals(model, features, df_train, df_2023, player_id):
+    """
+    Predict goals for a specific player and compare with actual results
+    """
+    player_data_from_train = df_train[df_train["playerId"] == player_id]
+    if player_data_from_train.empty:
+
+        return None, None, None, None, "Player did not play in the training seasons."
+    
+    # Find player in 2023 data
+    player_row_2023 = df_2023[df_2023["playerId"] == player_id]
+    
+    if player_row_2023.empty:
+        return None, None, None, None, "Player not found in 2023 data"
+    
+    player_name = player_row_2023["name"].values[0]
+    actual_goals = player_row_2023["I_F_goals"].values[0]
+    
+    # Get features for prediction
+    player_features = player_row_2023[features]
+    
+    # Make prediction
+    predicted_goals = model.predict(player_features)[0]
+    
+    
+    
+    # Calculate accuracy
+    if actual_goals > 0:
+        accuracy = 100 - abs(predicted_goals - actual_goals) / actual_goals * 100
+    else:
+        accuracy = 0
+    
+    return player_name, predicted_goals, actual_goals, accuracy, None
