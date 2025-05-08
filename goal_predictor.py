@@ -3,22 +3,25 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
+from pathlib import Path
 import os
 
 #Training data
 def load_data():
-    base_path = r"C:\Users\Samuli\NHL_ML\machine-learning-ice-hockey\Skaters"
+    #base_path = r"C:\Users\Samuli\NHL_ML\machine-learning-ice-hockey\Skaters"
+    script_dir = Path(__file__).resolve().parent
+    base_path = script_dir / "Skaters"
     
-    df_2019 = pd.read_csv(os.path.join(base_path, "skaters_2019.csv"))
-    df_2020 = pd.read_csv(os.path.join(base_path, "skaters_2020.csv"))
-    df_2021 = pd.read_csv(os.path.join(base_path, "skaters_2021.csv"))
-    df_2022 = pd.read_csv(os.path.join(base_path, "skaters_2022.csv"))
+    df_2019 = pd.read_csv(base_path / "skaters_2019.csv")
+    df_2020 = pd.read_csv(base_path / "skaters_2020.csv")
+    df_2021 = pd.read_csv(base_path / "skaters_2021.csv")
+    df_2022 = pd.read_csv(base_path / "skaters_2022.csv")
 
     df_train = pd.concat([df_2019, df_2020, df_2021, df_2022,]) #Combine data
     df_train= df_train[df_train["situation"] == "all"] #Select all types
 
     #Testing data
-    df_2023 = pd.read_csv(os.path.join(base_path, "skaters_2023.csv"))
+    df_2023 = pd.read_csv(base_path / "skaters_2023.csv")
     df_2023= df_2023[df_2023["situation"] == "all"]
     
     print("Sarakkeet:", df_train.columns.tolist())
@@ -28,7 +31,7 @@ def load_data():
 
 
 
-def train_model(df_train,df_2023):
+def train_model(df_train):
     # Define features and target
     features = [
         "I_F_xGoals", "I_F_shotsOnGoal", "I_F_rebounds",
