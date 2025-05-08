@@ -18,7 +18,7 @@ matches = matches[matches["situation"] == "all"]
 winner = 0
 matches["winner"] = (matches["goalsFor"] > matches["goalsAgainst"]).astype(int)
 
-#Use RandomForestClassifier as the algorithm to recognize non-linear patterns in the data
+#uUse RandomForestClassifier as the algorithm to recognize non-linear patterns in the data
 rf = RandomForestClassifier(n_estimators=50, min_samples_split=10, random_state=1)
 
 def set_season_years(season_start_year, season_end_year):
