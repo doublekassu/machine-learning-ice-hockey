@@ -14,7 +14,7 @@ if valinta == "Ottelun voittaja":
     
     harjoitus_aloituskausi = st.text_input("Harjoitusdatan aloituskausi")
     harjoitus_paatoskausi = st.text_input("Harjoitusdatan päätöskausi")
-    
+
     st.header("Muokkaa testidatan attribuutteja")
 
     testi_aloituskausi = st.text_input("Testidatan aloituskausi")
@@ -22,6 +22,11 @@ if valinta == "Ottelun voittaja":
 
     # Ennustuspainike
     if st.button("Veikkaa voittaja"):
+        train_data = set_season_years(harjoitus_aloituskausi, harjoitus_paatoskausi)
+        test_data = set_season_years(testi_aloituskausi, testi_paatoskausi)
+
+        
+
         #test.trainData(harjoitus_aloituskausi, harjoitus_paatoskausi)
         #test.testData(testi_aloituskausi, testi_paatoskausi)
 
