@@ -6,7 +6,7 @@
 
 # Usage of Maalienmäärä
 ### ID's for testing Maalienmäärä (All ID's found in Skaters folder "skaters_20xx" files.
-### Auston Matthews ID = "____" Note: Accuracy a bit off
-### Mikko Rantanen ID = "_____" Note: Better Accuracy
-### Connor Bedard ID = "_____"  Note: Did not play in 2019-2022 (=training_data)
+### Auston Matthews ID = "8479318" Note: Accuracy a bit off
+### Mikko Rantanen ID = "8478420" Note: Better Accuracy
+### Connor Bedard ID = "8484144"  Note: Did not play in 2019-2022 (training_data)
 
