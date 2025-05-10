@@ -8,7 +8,6 @@ import os
 
 #Training data
 def load_data():
-    #base_path = r"C:\Users\Samuli\NHL_ML\machine-learning-ice-hockey\Skaters"
     script_dir = Path(__file__).resolve().parent
     base_path = script_dir / "Skaters"
     
@@ -18,7 +17,7 @@ def load_data():
     df_2022 = pd.read_csv(base_path / "skaters_2022.csv")
 
     df_train = pd.concat([df_2019, df_2020, df_2021, df_2022,]) #Combine data
-    df_train= df_train[df_train["situation"] == "all"] #Select all types
+    df_train= df_train[df_train["situation"] == "all"] #Select all = 5v5, 5v4, 5v3 etc.
 
     #Testing data
     df_2023 = pd.read_csv(base_path / "skaters_2023.csv")
@@ -32,7 +31,7 @@ def load_data():
 
 
 def train_model(df_train):
-    # Define features and target
+    # Define features that has been chosen to use and target
     features = [
         "I_F_xGoals", "I_F_shotsOnGoal", "I_F_rebounds",
         "I_F_highDangerxGoals", "I_F_mediumDangerxGoals",
@@ -57,9 +56,9 @@ def find_player_by_id(df, pelaaja_id):
     return player_row
 
 def evaluate_model(model, features, df_test):
-    """
-    Evaluate the model on test data and return accuracy metrics
-    """
+    
+    #Evaluate the model on test data and return accuracy metrics
+
     X_test = df_test[features]
     y_test = df_test["I_F_goals"]
     
@@ -71,17 +70,19 @@ def evaluate_model(model, features, df_test):
     return r2, rmse, y_test.mean(), y_pred.mean()
 
 def predict_player_goals(model, features, df_train, df_2023, player_id):
-    """
-    Predict goals for a specific player and compare with actual results
-    """
+    
+    #Predict goals for a specific player and compare with actual results
+    
     player_data_from_train = df_train[df_train["playerId"] == player_id]
+    #If player is a rookie there is no NHL data to predict
     if player_data_from_train.empty:
 
         return None, None, None, None, "Player did not play in the training seasons."
     
     # Find player in 2023 data
     player_row_2023 = df_2023[df_2023["playerId"] == player_id]
-    
+
+    #If player not found in 2023
     if player_row_2023.empty:
         return None, None, None, None, "Player not found in 2023 data"
     
